@@ -1,56 +1,33 @@
-// Import required packages
-const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+// index.js
 
-// Import routes
-const authRoutes = require("./routes/auth");
-const quizRoutes = require("./routes/quiz");
-// const jobRoutes = require('./routes/jobs');
+const express = require('express');
+const mongoose = require('mongoose');
+require('dotenv').config();
+const cors = require('cors');
 
-// Create Express app
+const apiRoutes = require('./routes/api');
+
 const app = express();
+const PORT = process.env.PORT || 4000;
 
-// Middleware - Enable CORS
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // or your frontend URL
+  credentials: true, // if you're using cookies or sessions
+}));
 
-// Middleware - Parse JSON request body
-app.use(bodyParser.json());
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// Middleware
 app.use(express.json());
-// Middleware - Parse URL-encoded request body
-// app.use(bodyParser.urlencoded({ extended: true }));
 
-// Connect to MongoDB using Mongoose
-// const mongoose = require('mongoose');
+// API Routes
+app.use('/api', apiRoutes);
 
-mongoose
-  .connect(
-    "mongodb+srv://sarthak:sarthak123@cluster0.iay33so.mongodb.net/quizApp?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.error("Failed to connect to MongoDB:", err);
-  });
-
-// Register routes
-app.use("/api/auth", authRoutes);
-app.use("/api/quiz", quizRoutes);
-// app.use("/api/job", jobRoutes);
-app.get("/", async (req, res) => {
-  res.status(200).json("Server is up and running");
-});
-// Error handler middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Internal Server Error" });
-});
-
-// Start server
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
