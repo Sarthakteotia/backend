@@ -10,10 +10,7 @@ const apiRoutes = require('./src/routes/api');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors({
-  origin: 'http://localhost:3000', // or your frontend URL
-  credentials: true, // if you're using cookies or sessions
-}));
+app.use(cors({origin:"*"}));
 
 
 // Connect to MongoDB
