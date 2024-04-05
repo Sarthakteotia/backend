@@ -3,9 +3,9 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  username: String,
-  key: String,
-  expiryTimeFrame: String
+  username: {type :String , default : null},
+  key: {type :String , default : null},
+  expires_in: {type :Date , default : null}
 });
 
 
